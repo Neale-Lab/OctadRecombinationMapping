@@ -54,34 +54,32 @@ To reconcile the SK1 and S288c calls, run the script ‘Reconcile_SK1_S288c_call
 Output: a “gr2” file that is compatible with the event viewer in R, and a “binary” file containing the final variant calls, compatible with the event caller. For example, “OM1_gr2”, “OM1_binary”.
 Example binary files are in the supplementary files for this publication.
 
-
-
 Step 7. Collect variant patterns on each chromosome.
 Input: Binary files.
 To collect variant changes into patterns, use the Python script ‘AnnotationScript’. It is necessary to edit the script to contain the correct filenames. Then run the script for each binary file. This script requires the file “ChrLen2011_Rep3” which contains the chromosome lengths.
 The annot files output needs to be modified slightly in order to be compatible with the next step. This uses an R script called ‘annot files modifier.R’. Run this for each sample.
 Output: annotated chromosome files e.g “NAnnot_OM1”
 
-Step 7. Call events.
+Step 8. Call events.
 Input: Annotated chromosome files.
 To call recombination events, run the Python script ‘EventsScript.py’. Edit the file to contain correct filenames. You can also adjust the minimum distance between events, e.g. if the limit is 1500, events occurring closer than 1500bp will be considered part of the same event.
 This produces two files, “Events” and “UEvents”. The UEvents file is needed for events at the end of the chromosome. To combine the two files, use the R script ‘Run_event_sorterV3.R’. This also sorts the events in order of complexity which is useful for annotation.
 Output: Sorted Events file, for example “SEvents_OM1_1500”
 
-Step 8. Combine and image events.
+Step 9. Combine and image events.
 Input: Sorted Events files, gr2 files, datatracks
 To make combined master tables containing all the octad data, run the R script ‘Combining Events TablesV2.R’ to create master tables. These are input into the imager.
 Create images of every event using the R script ‘Event_Imager_Unannotatedv11.R’. This requires a number of datatracks which are in provided. 
 Output: Master table of events, images of each event.
 
-Step 9. Manually annotate events
+Step 10. Manually annotate events
 Input: Event images and sorted event files
 Manually examine each image to check the category is correct, look for errors and write notes. Edit the sorted events file with any changes, and rename it “AEvents” for annotated events. For example, ‘AEvents_OM1_1500.txt’.
 Guidance for event categories can be found in this publication or in Marsolier Kergoat et al., 2017.
 Also record the orientation of the DNA strands if possible, in the Orientation_table file.
 Output: Annotated events tables, Orientation table.
 
-Step 10. Make annotated images.
+Step 11. Make annotated images.
 Input: Annotated events files, orientation table, master gr2 file, datatracks
 To create a post-annotation master table, use the R script ‘Combining_Annotated_Events’. You don’t need to re-make the gr2 table. 
 Create post-annotation images of every event using the R script “Event_Imager_Annotated”. This is similar to the first imager but includes some more information, such as strand orientation if you determined this.
