@@ -1,6 +1,8 @@
 # OctadRecombinationMapping
 A collection of R and Python scripts used to map recombination events in yeast octads and tetrads.
 
+This repository accompanies the publication "Separable roles of the DNA damage response kinase Mec1(ATR) and its activator Rad24(RAD17) within the regulation of meiotic recombination":
+https://www.researchgate.net/publication/329741247_Separable_roles_of_the_DNA_damage_response_kinase_Mec1ATR_and_its_activator_Rad24RAD17_within_the_regulation_of_meiotic_recombination
 
 Program Requirements
 •	R for Windows 3.5.1: https://www.r-project.org/
@@ -12,7 +14,24 @@ Program Requirements
 
 For all R scripts, there are additional comments written inside the script which explain how to use them.
 
-Step 1. Alignment
+Datatracks from external publications are used to plot alongside recombination events. The datatracks are included in this repository because they have been modified in order to work with the scripts presented here. The tracks are the Spo11 profile and hotspot strength values (Mohibullah and Keeney, 2017; Pan et al., 2011), Rec114/Mer2/Mei1 (RMM) profile (Panizza et al., 2011), Rec8 peaks (Ito et al., 2014), and transcribed regions (Nagalakshmi et al., 2008).
+
+Also included in this repository are some example files for key stages in the pipeline:
+AEvents_OM1_1500.txt
+Annot_OM1
+Events_OM1_1500
+NAnnot_OM1
+NEvents_OM1_1500
+OM1_Annotated_Images.pdf
+OM1_binary.txt
+OM1_gr2.txt
+OM1_Images.pdf
+Orientation_table.txt
+SEvents_OM1_1500
+UEvents_OM1_1500
+
+
+Step 1. Alignment.
 Input: Paired FASTQ files, appropriate reference genome files. 
 Example FastQ files are publicly available at the NCBI Sequence Read Archive (accession numbers SRP151982, SRP152540, SRP152953).
 Example reference files are provided. There are two versions of the SK1 genome, one for NDT80-AR samples and one for any other genotypes.
@@ -21,7 +40,7 @@ Example command:
 bowtie2 -p 8 -X 1000 --local --dovetail -D 20 -R 3 -N 1 -L 20 -i S,1,0.50 --mp 5,1 --rg-id 1 --rg PU:1 --rg LB:1  --rg SM:1 --rg PL:1 -x S288c_2u_mt --trim3 0 --trim5 0 -1 OM1A_R1.fastq -2 OM1A_R2.fastq -S OM1A_S288c.SAM
 Output: Aligned SAM files for S288c and SK1 genomes.
 
-Step 2. Sort SAM file
+Step 2. Sort SAM file.
 Input: Aligned SAM files for S288c and SK1 genomes.
 To sort the SAM file, use SAMtools “view” and “index” commands. 
 Example commands:
@@ -72,7 +91,7 @@ To make combined master tables containing all the octad data, run the R script �
 Create images of every event using the R script ‘Event_Imager_Unannotatedv11.R’. This requires a number of datatracks which are in provided. 
 Output: Master table of events, images of each event.
 
-Step 10. Manually annotate events
+Step 10. Manually annotate events.
 Input: Event images and sorted event files
 Manually examine each image to check the category is correct, look for errors and write notes. Edit the sorted events file with any changes, and rename it “AEvents” for annotated events. For example, ‘AEvents_OM1_1500.txt’.
 Guidance for event categories can be found in this publication or in Marsolier Kergoat et al., 2017.
@@ -85,6 +104,16 @@ To create a post-annotation master table, use the R script ‘Combining_Annotate
 Create post-annotation images of every event using the R script “Event_Imager_Annotated”. This is similar to the first imager but includes some more information, such as strand orientation if you determined this.
 Output: Annotated event table for analysis, annotated event images
 
+Datatrack references
 
+Mohibullah N, Keeney S (2017) Numerical and spatial patterning of yeast meiotic DNA breaks by Tel1. Genome Res 27: 278-288.
+
+Panizza S, Mendoza MA, Berlinger M, Huang L, Nicolas A, Shirahige K et al. (2011) Spo11-accessory proteins link double-strand break sites to the chromosome axis in early meiotic recombination. Cell 146: 372-383.
+
+Ito M, Kugou K, Fawcett JA, Mura S, Ikeda S, Innan H et al. (2014) Meiotic recombination cold spots in chromosomal cohesion sites. Genes Cells 19: 359-373.
+
+Nagalakshmi U, Wang Z, Waern K, Shou C, Raha D, Gerstein M et al. (2008) The transcriptional landscape of the yeast genome defined by RNA sequencing. Science 320: 1344-1349.
+
+Pan J, Sasaki M, Kniewel R, Murakami H, Blitzblau HG, Tischfield SE et al. (2011) A Hierarchical Combination of Factors Shapes the Genome-wide Topography of Yeast Meiotic Recombination Initiation. Cell 144: 719-731.
 
 
