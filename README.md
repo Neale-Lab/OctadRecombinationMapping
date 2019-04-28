@@ -30,6 +30,7 @@ Orientation_table.txt
 SEvents_OM1_1500
 UEvents_OM1_1500
 
+Instructions
 
 Step 1. Alignment.
 Input: Paired FASTQ files, appropriate reference genome files. 
