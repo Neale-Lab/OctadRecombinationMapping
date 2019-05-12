@@ -14,10 +14,8 @@ Pan$TotalHpM=(Pan$Watson+Pan$Crick)/TotalHits*1000000 # Convert Pan data to Hits
 TotalHits=sum(NeemanWT$Watson+NeemanWT$Crick)
 NeemanWT$TotalHpM=(NeemanWT$Watson+NeemanWT$Crick)/TotalHits*1000000 # Convert Pan data to Hits per million reads (HpM)
 
-# Create new empty master dataframe
-masterA=NULL
-
 library(stringr)
+library(plyr)
 #library(data.table)
 
 # Sequentially imports each Event Table and combines into a Master Table with additional identified columns for Meiosis, Threshold, Genotype and GenotypeID (e.g. OM2, 1500, OM, 2)
@@ -25,12 +23,15 @@ files = list.files(pattern="AEvents_") # import files names with "AEvents_" stri
 files1 = length(files) # Count number of files
 files2 = read.table(text = files, sep = "_", as.is = TRUE) #Split file names by "_" separator and create table "files2"
 
+# Create new empty master dataframe
+masterA=NULL
+
 for (j in 1:files1) {
  data=NULL 
  data <- read.table(files[j], sep = "\t", header=TRUE)
- if(ncol(data)==35){
- data <- data[,-35]
- data <- data[,-34]}
+ #if(ncol(data)==35){
+ #data <- data[,-35]
+ #data <- data[,-34]}
  data["Meiosis"]=files2[j,2] # Insert Meiosis identifier from files2 into a new column
  data["threshold"]=str_extract(files2[j,3],"[[:digit:]]+") # Extracts digit portion of string
  data["Genotype"]=gsub('([A-z]+).*','\\1',files2[j,2])
@@ -38,16 +39,15 @@ for (j in 1:files1) {
  data["midpoint"]=(data$start5+data$start3+data$stop5+data$stop3)/4 # Add midpoint column
  data["debut"]=(data$midpoint-(0.5*data$len_mid)) # Add event start column
  data["fin"]=(data$midpoint+(0.5*data$len_mid)) # Add event end column
- masterA <- rbind(masterA, data) # Combine data into master table
+ data$CO[data$CO == "U"] <- NA
+ data$CO <- as.numeric(as.character(data$CO))
+ masterA <- rbind.fill(masterA, data) # Combine data into master table
 
 }
 
 #Remove mitotic or false events
 masterA <- masterA[which(masterA$LSB!=0),]
 masterA <- masterA[which(masterA$threshold==1500),]
-
-masterA$CO[masterA$CO == "U"] <- NA
-masterA$CO <- as.numeric(as.character(masterA$CO))
 
 masterA$LCO <- masterA$CO
 masterA$LNCO <- (masterA$LSB-masterA$CO)
